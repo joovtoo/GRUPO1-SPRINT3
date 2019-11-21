@@ -1,0 +1,54 @@
+enable
+configure terminal
+hostname SW-CORE
+banner motd "ACESSO APENAS PARA PESSOAS DE TI"
+enable secret SenhadaEnable
+service password-encryption
+username joaoabreu privilege 15 secret senhajoao
+username lucasrodrigues privilege 15 secret senhalucas
+username paulolima privilege 15 secret senhapaulo	
+username gabrielpereira privilege 15 secret senhagabriel
+service password-encryption
+ip domain-name grupo1.local
+crypto key generate rsa general-keys modulus 1024
+line vty 0 15
+login local
+transport input ssh
+exec-timeout 5
+exit
+line console 0
+password SenhadaConsole
+login
+exit
+vlan 11
+name VLAN11
+exit
+vlan 101
+name VLAN101
+interface vlan 101
+ip address 192.168.254.253 255.255.255.0
+description INTERFACE DE GERENCIAMENTO
+no shutdown
+exit
+ip default-gateway 192.168.254.1
+interface f0/1
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 11,101,99
+description CONEXAO COM SW-GRP01
+no shutdown
+exit
+interface f0/11
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 11,101,99
+description CONEXAO COM RT-01
+no shutdown
+exit
+interface f0/21
+switchport mode access
+switchport access vlan 101
+description CONEXAO COM SRV-01 GRUPO 1
+no shutdown
+exit
+do wr
