@@ -1,0 +1,39 @@
+enable
+configure terminal
+hostname RT-01
+banner motd "ACESSO APENAS PARA PESSOAS DE TI"
+enable secret SenhadaEnable
+service password-encryption
+security password min-length 8
+username joaoabreu privilege 15 secret senhajoao
+username lucasrodrigues privilege 15 secret senhalucas
+username paulolima privilege 15 secret senhapaulo	
+username gabrielpereira privilege 15 secret senhagabriel
+service password-encryption
+ip domain-name grupo1.local
+crypto key generate rsa general-keys modulus 1024
+line vty 0 15
+login local
+transport input ssh
+exec-timeout 5
+exit
+line console 0
+password SenhadaConsole
+login
+exit
+interface g0/1
+no shutdown
+exit
+interface g0/1.11
+encapsulation dot1q 11
+ip address 192.168.11.1 255.255.255.0
+ip helper-address 192.168.254.5
+description GATEWAY VLAN 11
+exit
+interface g0/1.101
+encapsulation dot1q 101
+ip address 192.168.254.1 255.255.255.0
+ip helper-address 192.168.254.5
+description GATEWAY VLAN 101
+exit
+do wr
